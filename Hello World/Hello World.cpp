@@ -1,8 +1,15 @@
 #include "Student.h"
 #include <iostream>
+#include <string>
+
 
 using namespace std;
 
+struct Person
+{
+float weight;
+int age;
+};
 
 int main()
 {
@@ -10,6 +17,23 @@ int main()
     Student student;
     student.setName("Dia");
     student.Write();
+
+    Person person;
+    person.age = 17;
+
+    unsigned int i = 88;
+    //printf("%d\n", i);
+    cout << &i << endl;
+
+    cout << sizeof(int) << endl;
+    cout << sizeof(Person) << endl;
+    i++;
+    i += 5;
+    cout << i << endl;
+
+
+    char c = 'A';
+    cout << (int)c << endl;
 
     f();
 
