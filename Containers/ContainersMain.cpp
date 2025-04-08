@@ -38,7 +38,7 @@ void fruitList() {
 	fruits.push_front("pumpkin");
 	//iterates through list and prints out the data
 	for (auto const& i : fruits) {
-		std::cout << i << endl;
+		cout << i << endl;
 	}
 }
 
@@ -46,7 +46,7 @@ void groceryStock() {
 	map <string, int> stock = { make_pair("Chicken Broth", 3), make_pair("Green Onion", 27), make_pair("Potato", 8) };
 	stock["Chicken Broth"] = 30;
 	for (auto food = stock.begin(); food != stock.end(); ++food) {
-		std::cout << food->first << ": " << food->second << std::endl;
+		cout << food->first << ": " << food->second << endl;
 	}
 }
 
