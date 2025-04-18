@@ -15,13 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Hello World.cpp">
+    <ClCompile Include="Fail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Student.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
