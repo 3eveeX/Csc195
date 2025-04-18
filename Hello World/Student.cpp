@@ -1,10 +1,17 @@
-#include "Student.h"
 #include <iostream>
+#include "../OOP/Student.h"
 
-void f() {
-	std::cout << "hello\n";
+using namespace std;
+
+void Student::Read()
+{
+	Human::Read();
+	cout << "GPA: " << endl;
+	cin >> _gpa;
 }
 
 void Student::Write() {
-	std::cout << name << std::endl;
+	Human::Write();
+	cout << "GPA: " << _gpa << endl;
+
 }

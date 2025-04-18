@@ -1,6 +1,4 @@
 #include "School.h"
-#include "Student.h"
-#include "Teacher.h"
 
 School::~School()
 {

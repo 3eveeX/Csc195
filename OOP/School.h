@@ -1,5 +1,6 @@
 #pragma once
-#include "Human.h"
+#include "Teacher.h"
+#include "Student.h"
 #include <vector>
 
 class School {
