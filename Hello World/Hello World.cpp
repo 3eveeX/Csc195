@@ -1,4 +1,4 @@
-#include "Student.h"
+#include "Person.h"
 #include <iostream>
 #include <string>
 
@@ -16,7 +16,6 @@ int main()
 
     Student student;
     student.setName("Dia");
-    student.Write();
 
     Person person;
     person.age = 17;
@@ -35,7 +34,7 @@ int main()
     char c = 'A';
     cout << (int)c << endl;
 
-    f();
+    
 
     cout << "Hello World!" << endl;
     cout << "Git is now tracking this project!" << endl;

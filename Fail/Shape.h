@@ -1,11 +1,22 @@
 #pragma once
 #include <iostream>
-#include <string>
+#include <vector>
 
 class Shape {
 public:
-    Shape() {}
-    ~Shape() {}
+    enum class Type {
+        CIRCLE,
+        RECTANGLE,
+        SHAPE
+    };
 
-    virtual float Area() = 0;
+    Shape() {}
+    ~Shape();
+    virtual Type getType() { return Type::SHAPE; }
+    virtual float Area() { return 0; }
+    void Add(Type type);
+    std::vector<Shape*> getShapes() { return shapes; }
+    void Write();
+private: 
+    std::vector<Shape*> shapes;
 };
