@@ -25,6 +25,8 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "raylib.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "PlayerBullet.h"
+#include "EnemyBullet.h"
 #include "raymath.h"
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 #include <vector>
@@ -36,7 +38,14 @@ int main ()
 	const int screenHeight = 800;
 	const int playerSize = 25;
 	float enemySpawnTime = 0.0f;
+	float dashLeftCooldown = 0.0f;
+	float dashRightCooldown = 0.0f;
+	float shootCooldown = 0.0f;
 	float angle = 0.0f;
+	bool hasDashedLeft = false;
+	bool hasDashedRight = false;
+	bool gunOverheat = false;
+	int score = 0;
 	// Tell the window to use vsync and work on high DPI displays
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
@@ -49,6 +58,7 @@ int main ()
 	Vector2 playerPosition = { ((float)screenWidth / 2)-170, (float)screenHeight - 75 };
 	Vector2 enemyPosition;
 	std::vector<Enemy*> enemies;
+	std::vector<Bullet*> bullets;
 	Player player(playerPosition, playerSize);
 	SetTargetFPS(60);
 	// game loop
@@ -61,6 +71,28 @@ int main ()
 	{
 		//timer for enemy spawns
 		enemySpawnTime += GetFrameTime();
+		//cooldown timer
+		if (hasDashedLeft) {
+			dashLeftCooldown += GetFrameTime();
+			if (dashLeftCooldown >= 1.5f) {
+				hasDashedLeft = false;
+				dashLeftCooldown = 0.0f;
+			}
+		}
+		if (hasDashedRight) {
+			dashRightCooldown += GetFrameTime();
+			if (dashRightCooldown >= 1.5f) {
+				hasDashedRight = false;
+				dashRightCooldown = 0.0f;
+			}
+		}
+		if (gunOverheat) {
+			shootCooldown += GetFrameTime();
+			if (shootCooldown >= 2.0f) {
+				gunOverheat = false;
+				shootCooldown = 0.0f;
+			}
+		}
 		if (IsKeyDown(KEY_RIGHT)) {
 			playerPosition.x += 9.5;
 			if (playerPosition.x > (screenWidth - 280) - playerSize) {
@@ -75,22 +107,31 @@ int main ()
 			}
 			player.setPlayerX(playerPosition.x);
 		}
-		if (IsKeyPressed(KEY_Z)) {
+		if (IsKeyPressed(KEY_Z) && !hasDashedLeft) {
 			playerPosition.x -= 195;
 			if (playerPosition.x < 30 + playerSize) {
 				playerPosition.x = playerSize + 30;
 			}
 			player.setPlayerX(playerPosition.x);
+			hasDashedLeft = true;
 		}
-		if (IsKeyPressed(KEY_C)) {
+		if (IsKeyPressed(KEY_C) && !hasDashedRight) {
 			playerPosition.x += 195;
 			if (playerPosition.x > (screenWidth - 280) - playerSize) {
 				playerPosition.x = screenWidth - 280 - playerSize;
 			}
 			player.setPlayerX(playerPosition.x);
+			hasDashedRight = true;
+		}
+		if (IsKeyPressed(KEY_X) && !gunOverheat) {
+			bullets.push_back(new PlayerBullet(playerPosition, Bullet::Type::Player));
+			std::cout << "shot" << std::endl;
+			if (bullets.size() > 4) {
+				gunOverheat = true;
+			}
 		}
 
-		if (enemySpawnTime >= 60.0f) {
+		if (enemySpawnTime >= 7.5f) {
 			for (int i = 0; i < GetRandomValue(1, 5); i++) {
 				enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
 				enemies.push_back(new Enemy(enemyPosition, 2));
@@ -100,10 +141,17 @@ int main ()
 		}
 		angle += .1f;
 		for (Enemy* enemy : enemies) {
+			int spawnBullet = GetRandomValue(0, 1000);
 			if (enemy->getEnemyY() < 100) {
 				
 				
 				enemy->setEnemyX(enemy->getEnemyX()+(5*cosf(angle)));
+				if (enemy->getEnemyX() <= 55) {
+					enemy->setEnemyX(55);
+				}
+				if (enemy->getEnemyX() >= screenWidth - 305) {
+					enemy->setEnemyX(screenWidth-305);
+				}
 				enemy->setEnemyY(enemy->getEnemyY() + 2);
 				
 			}
@@ -113,9 +161,49 @@ int main ()
 			if (enemy->getEnemyX() <= 55 || enemy->getEnemyX() >= screenWidth - 305) {
 				enemy->reverse();
 			}
-
+			if (spawnBullet > 990) {
+				bullets.push_back(new EnemyBullet(Vector2{ enemy->getEnemyX(), enemy->getEnemyY() }, Bullet::Type::Enemy));
+			}
 		}
-		
+
+		for (Bullet* bullet : bullets) {
+			switch (bullet -> getType())
+			{
+			case Bullet::Type::Player:
+				bullet->update();
+				if (bullet->getBulletY() < 0) {
+					bullets.erase(bullets.begin());
+					std::cout << "deleted" << std::endl;
+				}
+				break;
+			case Bullet::Type::Enemy:
+				bullet->update();
+				if (bullet->getBulletY() > screenHeight) {
+					bullets.erase(bullets.begin());
+					std::cout << "deleted" << std::endl;
+				}
+
+				break;
+			default:
+				break;
+			}
+			bullet->draw();
+		}
+		for (int i = 0; i < enemies.size(); i++) {
+			for (int j = 0; j < bullets.size(); j++) {
+				if (bullets[j]->getType() == Bullet::Type::Player) {
+					if (CheckCollisionCircles(Vector2{ enemies[i]->getEnemyX(), enemies[i]->getEnemyY() }, 25, bullets[j]->getBulletPositionVector(), 5)) {
+						delete enemies[i];
+						enemies.erase(enemies.begin() + i);
+						delete bullets[j];
+						bullets.erase(bullets.begin() + j);
+						i--;
+						j--;
+						break;
+					}
+				}
+			}
+		}
 
 		// drawing
 		BeginDrawing();
@@ -124,8 +212,10 @@ int main ()
 		ClearBackground(BLACK);
 		DrawRectangle(0, 0, 30, 800, GOLD);
 		DrawRectangle(screenWidth-280, 0, 280, 800, GOLD);
+		DrawRectangle(screenWidth - 240, 40, 200, 100, WHITE);
 		// draw some text using the default font
-		DrawText("Hello Raylib", 200,200,20,WHITE);
+		DrawText("Score:", screenWidth-240,20,20,BLACK);
+
 
 		player.draw();
 		for (auto enemy : enemies) {
