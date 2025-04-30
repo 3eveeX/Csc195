@@ -38,6 +38,10 @@ int main ()
 	SetTargetFPS(60);
 	// game loop
 	int enemySpeed;
+	for (int i = 0; i < 5; i++) {
+		enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
+		enemies.push_back(new Enemy(enemyPosition, 2));
+	}
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
 		//timer for enemy spawns
@@ -71,7 +75,7 @@ int main ()
 			player.setPlayerX(playerPosition.x);
 		}
 
-		if (enemySpawnTime >= 10.0f) {
+		if (enemySpawnTime >= 60.0f) {
 			for (int i = 0; i < GetRandomValue(1, 5); i++) {
 				enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
 				enemies.push_back(new Enemy(enemyPosition, 2));
