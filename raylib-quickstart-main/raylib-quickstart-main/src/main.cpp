@@ -7,6 +7,21 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 
 */
 
+
+/*TODO:
+	- make bullets
+	- seperate bullets into player bullets and enemy bullets
+	- make sure enemies can essentially spam bullets
+	- add collision
+	- add scoring
+	- add death screens
+	- add restart
+	- save high scores to a file to read via ifstream and ofstream
+	- maybe add a start screen
+	- maybe add textures
+	- edit this list as needed in the future
+*/
+
 #include "raylib.h"
 #include "Player.h"
 #include "Enemy.h"
