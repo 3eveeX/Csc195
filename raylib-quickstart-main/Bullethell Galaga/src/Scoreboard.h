@@ -10,9 +10,9 @@ public:
 
 	Scoreboard();
 
-	template<typename T>
-	void streamOut(std::ostream& ostream, const T& value) {
-		ostream << value << std::endl;
+	template<typename T1/*, typename T2*/ >
+	void streamOut(std::ostream& ostream, const T1& name/*, T2& score*/) {
+		ostream << name << /*": " << score <<*/ std::endl;
 
 	}
 

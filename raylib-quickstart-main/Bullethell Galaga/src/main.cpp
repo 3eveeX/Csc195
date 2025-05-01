@@ -43,7 +43,7 @@ int main ()
 	const int screenWidth = 1280;
 	const int screenHeight = 800;
 	const int playerSize = 25;
-	float enemySpawnTime = 0.0f;
+	float enemySpawnTime;
 	float dashLeftCooldown = 0.0f;
 	float dashRightCooldown = 0.0f;
 	float shootCooldown = 0.0f;
@@ -78,10 +78,8 @@ int main ()
 	bool start = true;
 	bool play = false;
 	bool dead = false;
-	for (int i = 0; i < 5; i++) {
-		enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
-		enemies.push_back(new Enemy(enemyPosition, 2));
-	}
+	bool controls = false;
+	
 	std::cout << "Current Working Dir: " << GetWorkingDirectory() << std::endl;
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
@@ -92,11 +90,19 @@ int main ()
 			ClearBackground(BLACK);
 			DrawRectangle(0, 0, 30, 800, GOLD);
 			DrawRectangle(screenWidth - 280, 0, 280, 800, GOLD);
+			DrawText("BulletHell", 30, 20, 202, RAYWHITE);
+			DrawText("GALAGA", 60, 220, 202, GREEN);
 			if (GetMouseX() > screenWidth - 240 && GetMouseX() < screenWidth - 40 && GetMouseY() > 20 && GetMouseY() < 100) {
 				DrawRectangle(screenWidth - 240, 20, 200, 80, DARKGRAY);
 				DrawText("Start", screenWidth - 220, 40, 30, GRAY);
 
 				if (IsMouseButtonPressed(0)) {
+					enemySpawnTime = 0.0f;
+					score = 0;
+					for (int i = 0; i < 5; i++) {
+						enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
+						enemies.push_back(new Enemy(enemyPosition, 2));
+					}
 					start = false;
 					play = true;
 				}
@@ -176,14 +182,45 @@ int main ()
 				}
 
 			}
-
-			if (enemySpawnTime >= 7.5f) {
-				for (int i = 0; i < GetRandomValue(1, 5); i++) {
-					enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
-					enemies.push_back(new Enemy(enemyPosition, 2));
-					std::cout << i + 1 << std::endl;
+			if (score <= 25) {
+				if (enemySpawnTime >= 7.5f) {
+					for (int i = 0; i < GetRandomValue(1, 5); i++) {
+						enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
+						enemies.push_back(new Enemy(enemyPosition, 2));
+						std::cout << i + 1 << std::endl;
+					}
+					enemySpawnTime = 0.0f;
 				}
-				enemySpawnTime = 0.0f;
+			}
+			else if (score > 25 && score <= 50) {
+				if (enemySpawnTime >= 3.75f) {
+					for (int i = 0; i < GetRandomValue(1, 5); i++) {
+						enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
+						enemies.push_back(new Enemy(enemyPosition, 2));
+						std::cout << i + 1 << std::endl;
+					}
+					enemySpawnTime = 0.0f;
+				}
+			}
+			else if (score > 50 && score <= 75) {
+				if (enemySpawnTime >= 3.75f) {
+					for (int i = 0; i < GetRandomValue(1, 5); i++) {
+						enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
+						enemies.push_back(new Enemy(enemyPosition, 4));
+						std::cout << i + 1 << std::endl;
+					}
+					enemySpawnTime = 0.0f;
+				}
+			}
+			else if (score > 75) {
+				if (enemySpawnTime >= 3.75f) {
+					for (int i = 0; i < GetRandomValue(4, 8); i++) {
+						enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
+						enemies.push_back(new Enemy(enemyPosition, 4));
+						std::cout << i + 1 << std::endl;
+					}
+					enemySpawnTime = 0.0f;
+				}
 			}
 			angle += .1f;
 			for (Enemy* enemy : enemies) {
@@ -293,6 +330,60 @@ int main ()
 
 
 			// end the frame and get ready for the next one  (display frame, poll input, etc...)
+			EndDrawing();
+		}
+		if (dead) {
+			BeginDrawing();
+
+			// Setup the back buffer for drawing (clear color and depth buffers)
+			ClearBackground(BLACK);
+			DrawRectangle(0, 0, 30, 800, GOLD);
+			DrawRectangle(screenWidth - 280, 0, 280, 800, GOLD);
+			DrawText("Score: ", ((screenWidth - 280) / 2) - 100, (screenHeight / 2)-150, 75, WHITE);
+			DrawText(scoreString.c_str(), ((screenWidth - 280) / 2) - 100, (screenHeight / 2), 50, WHITE);
+			if (GetMouseX() > ((screenWidth - 280) / 2) - 100 && GetMouseX() < ((screenWidth - 280) / 2) + 100 && GetMouseY() > screenHeight - 150 && GetMouseY() < screenHeight - 70) {
+				DrawRectangle(((screenWidth - 280) / 2) - 100, screenHeight - 150, 200, 80, DARKGRAY);
+				DrawText("Replay", ((screenWidth - 280) / 2) - 80, screenHeight - 130, 30, GRAY);
+
+				if (IsMouseButtonPressed(0)) {
+					enemySpawnTime = 0.0f;
+					score = 0;
+					enemies.clear();
+					enemyBullets.clear();
+					for (int i = 0; i < 5; i++) {
+						enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
+						enemies.push_back(new Enemy(enemyPosition, 2));
+					}
+					playerPosition = { ((float)screenWidth / 2) - 170, (float)screenHeight - 75 };
+					player.update();
+					dead = false;
+					play = true;
+				}
+
+			}
+			else {
+				DrawRectangle(((screenWidth - 280) / 2) - 100, screenHeight - 150, 200, 80, GRAY);
+				DrawText("Replay", ((screenWidth - 280) / 2) - 80, screenHeight - 130, 30, LIGHTGRAY);
+			}
+			if (GetMouseX() > ((screenWidth - 280) / 2) - 100 && GetMouseX() < ((screenWidth - 280) / 2) + 100 && GetMouseY() > screenHeight - 250 && GetMouseY() < screenHeight - 170) {
+				DrawRectangle(((screenWidth - 280) / 2) - 100, screenHeight - 250, 200, 80, DARKGRAY);
+				DrawText("Main Menu", ((screenWidth - 280) / 2) - 80, screenHeight - 230, 30, GRAY);
+
+				if (IsMouseButtonPressed(0)) {
+					
+					enemies.clear();
+					enemyBullets.clear();
+					playerPosition = { ((float)screenWidth / 2) - 170, (float)screenHeight - 75 };
+					player.update();
+					dead = false;
+					start = true;
+				}
+
+			}
+			else {
+				DrawRectangle(((screenWidth - 280) / 2) - 100, screenHeight - 250, 200, 80, GRAY);
+				DrawText("Main Menu", ((screenWidth - 280) / 2) - 80, screenHeight - 230, 30, LIGHTGRAY);
+			}
 			EndDrawing();
 		}
 	}
