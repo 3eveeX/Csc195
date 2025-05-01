@@ -14,10 +14,10 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 	+ make sure enemies can essentially spam bullets
 	+ add collision
 	+ add scoring
-	- add death screens
-	- add restart
+	+ add death screens
+	+ add restart
 	+ save high scores to a file to read via ifstream and ofstream
-	- maybe add a start screen
+	+ maybe add a start screen
 	- maybe add textures
 	- edit this list as needed in the future
 */
@@ -112,11 +112,49 @@ int main ()
 				DrawRectangle(screenWidth - 240, 20, 200, 80, GRAY);
 				DrawText("Start", screenWidth - 220, 40, 30, LIGHTGRAY);
 			}
+			if (GetMouseX() > screenWidth - 240 && GetMouseX() < screenWidth - 40 && GetMouseY() > 120 && GetMouseY() < 200) {
+				DrawRectangle(screenWidth - 240, 120, 200, 80, DARKGRAY);
+				DrawText("Controls", screenWidth - 220, 140, 30, GRAY);
+
+				if (IsMouseButtonPressed(0)) {
+					
+					start = false;
+					controls = true;
+				}
+
+			}
+			else {
+				DrawRectangle(screenWidth - 240, 120, 200, 80, GRAY);
+				DrawText("Controls", screenWidth - 220, 140, 30, LIGHTGRAY);
+			}
 			scoreboard.update();
 			scoreboard.draw();
 			EndDrawing();
 		}
+		if (controls) {
+			BeginDrawing();
 
+			// Setup the back buffer for drawing (clear color and depth buffers)
+			ClearBackground(BLACK);
+			DrawRectangle(0, 0, 30, 800, GOLD);
+			DrawRectangle(screenWidth - 280, 0, 280, 800, GOLD);
+			
+			if (GetMouseX() > screenWidth - 240 && GetMouseX() < screenWidth - 40 && GetMouseY() > 20 && GetMouseY() < 100) {
+				DrawRectangle(screenWidth - 240, 20, 200, 80, DARKGRAY);
+				DrawText("Main Menu", screenWidth - 220, 40, 30, GRAY);
+
+				if (IsMouseButtonPressed(0)) {
+					controls = false;
+					start = true;
+				}
+
+			}
+			else {
+				DrawRectangle(screenWidth - 240, 20, 200, 80, GRAY);
+				DrawText("Main menu", screenWidth - 220, 40, 30, LIGHTGRAY);
+			}
+			EndDrawing();
+		}
 		if (play) {
 			scoreboard.update();
 			//timer for enemy spawns
@@ -124,14 +162,14 @@ int main ()
 			//==cooldown timers==
 			if (hasDashedLeft) {
 				dashLeftCooldown += GetFrameTime();
-				if (dashLeftCooldown >= 1.5f) {
+				if (dashLeftCooldown >= 1.0f) {
 					hasDashedLeft = false;
 					dashLeftCooldown = 0.0f;
 				}
 			}
 			if (hasDashedRight) {
 				dashRightCooldown += GetFrameTime();
-				if (dashRightCooldown >= 1.5f) {
+				if (dashRightCooldown >= 1.0f) {
 					hasDashedRight = false;
 					dashRightCooldown = 0.0f;
 				}
