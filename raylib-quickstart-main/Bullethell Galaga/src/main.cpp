@@ -350,6 +350,7 @@ int main ()
 					score = 0;
 					enemies.clear();
 					enemyBullets.clear();
+					playerBullets.clear();
 					for (int i = 0; i < 5; i++) {
 						enemyPosition = { (float)GetRandomValue(85, screenWidth - 335), 0 };
 						enemies.push_back(new Enemy(enemyPosition, 2));
