@@ -262,7 +262,13 @@ int main ()
 			}
 			angle += .1f;
 			for (Enemy* enemy : enemies) {
-				int spawnBullet = GetRandomValue(0, 1000);
+				int spawnBullet;
+				if (score > 80) {
+					spawnBullet = GetRandomValue(500, 1000);
+				}
+				else {
+					spawnBullet = GetRandomValue(0, 1000);
+				}
 				if (enemy->getEnemyY() < 100) {
 
 
@@ -284,6 +290,9 @@ int main ()
 				}
 				if (spawnBullet > 965) {
 					enemyBullets.push_back(new EnemyBullet(Vector2{ enemy->getEnemyX(), enemy->getEnemyY() }, Bullet::Type::Enemy));
+				}
+				if (score > 80) {
+
 				}
 			}
 
