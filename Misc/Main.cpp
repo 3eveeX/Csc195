@@ -52,7 +52,7 @@ void streamOut(std::ostream& ostream, const T& value) {
 
 int main()
 {
-    streamOut(std::cout, NAME);
+    /*streamOut(std::cout, NAME);
 
     math::ipoint_t p(4, 5);
     std::cin >> p;
@@ -64,7 +64,7 @@ int main()
     streamOut(fstream, 3.5f);
     streamOut(fstream, 2);
     streamOut(fstream, "F u (n)");
-    fstream.close();
+    fstream.close();*/
 
     std::string text;
     

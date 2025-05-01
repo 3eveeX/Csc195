@@ -12,8 +12,10 @@ public:
 	void setPlayerX(int x) {
 		_playerPos.x = x;
 	}
+	Rectangle getPlayerBounds() { return playerBounds; }
 
 private:
 	Vector2 _playerPos;
 	int playerSize;
+	Rectangle playerBounds;
 };

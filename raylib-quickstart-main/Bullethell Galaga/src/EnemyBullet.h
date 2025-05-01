@@ -14,7 +14,7 @@ public:
 	void update() override {
 		bulletPosition.y += 10;
 	}
-
+	
 
 	Type getType() override { return Type::Enemy; }
 private:
