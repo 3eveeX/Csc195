@@ -138,7 +138,11 @@ int main ()
 			ClearBackground(BLACK);
 			DrawRectangle(0, 0, 30, 800, GOLD);
 			DrawRectangle(screenWidth - 280, 0, 280, 800, GOLD);
-			
+			DrawText("Left Arrow -> Move Left", 40, 20, 20, WHITE);
+			DrawText("Right Arrow -> Move Right", 40, 60, 20, WHITE);
+			DrawText("Z -> Dodge Left (with cooldown)", 40, 100, 20, WHITE);
+			DrawText("C -> Dodge Right (with cooldown)", 40, 140, 20, WHITE);
+			DrawText("X -> Shoot (up to 5, or else cooldown)", 40, 180, 20, WHITE);
 			if (GetMouseX() > screenWidth - 240 && GetMouseX() < screenWidth - 40 && GetMouseY() > 20 && GetMouseY() < 100) {
 				DrawRectangle(screenWidth - 240, 20, 200, 80, DARKGRAY);
 				DrawText("Main Menu", screenWidth - 220, 40, 30, GRAY);
@@ -152,6 +156,19 @@ int main ()
 			else {
 				DrawRectangle(screenWidth - 240, 20, 200, 80, GRAY);
 				DrawText("Main menu", screenWidth - 220, 40, 30, LIGHTGRAY);
+			}
+			if (GetMouseX() > screenWidth - 240 && GetMouseX() < screenWidth - 40 && GetMouseY() > 120 && GetMouseY() < 200) {
+				DrawRectangle(screenWidth - 240, 120, 200, 80, DARKGRAY);
+				DrawText("Clear Scoreboard", screenWidth - 230, 140, 20, GRAY);
+
+				if (IsMouseButtonPressed(0)) {
+					scoreboard.erase();
+				}
+
+			}
+			else {
+				DrawRectangle(screenWidth - 240, 120, 200, 80, GRAY);
+				DrawText("Clear Scoreboard", screenWidth - 230, 140, 20, LIGHTGRAY);
 			}
 			EndDrawing();
 		}
@@ -214,7 +231,7 @@ int main ()
 			}
 			if (IsKeyPressed(KEY_X) && !gunOverheat) {
 				playerBullets.push_back(new PlayerBullet(playerPosition, Bullet::Type::Player));
-				std::cout << "shot" << std::endl;
+				//std::cout << "shot" << std::endl;
 				if (playerBullets.size() > 4) {
 					gunOverheat = true;
 				}
@@ -301,7 +318,7 @@ int main ()
 				if (bullet->getBulletY() < 0) {
 					delete bullet;
 					playerBullets.erase(playerBullets.begin());
-					std::cout << "deleted" << std::endl;
+					//std::cout << "deleted" << std::endl;
 					continue;
 				}
 				if (!playerBullets.empty()) {
@@ -338,7 +355,7 @@ int main ()
 				if (CheckCollisionCircleRec(enemyBullets[i]->getBulletPositionVector(), 5, player.getPlayerBounds())) {
 					delete enemyBullets[i];
 					enemyBullets.erase(enemyBullets.begin() + i);
-					std::cout << "You died. womp womp bitch" << std::endl;
+					//std::cout << "You died. womp womp bitch" << std::endl;
 					std::ofstream scoreWriteFApp("Scoreboard.txt", std::ios::app);
 					scoreboard.streamOut(scoreWriteFApp, score);
 					scoreWriteFApp.close();
@@ -395,6 +412,7 @@ int main ()
 				if (IsMouseButtonPressed(0)) {
 					enemySpawnTime = 0.0f;
 					score = 0;
+					scoreString = "0";
 					enemies.clear();
 					enemyBullets.clear();
 					playerBullets.clear();
@@ -404,6 +422,8 @@ int main ()
 					}
 					playerPosition = { ((float)screenWidth / 2) - 170, (float)screenHeight - 75 };
 					player.update();
+					player.draw();
+					DrawText(scoreString.c_str(), screenWidth - 220, 60, 50, BLACK);
 					dead = false;
 					play = true;
 				}
@@ -421,8 +441,10 @@ int main ()
 					
 					enemies.clear();
 					enemyBullets.clear();
+					playerBullets.clear();
 					playerPosition = { ((float)screenWidth / 2) - 170, (float)screenHeight - 75 };
 					player.update();
+					player.draw();
 					dead = false;
 					start = true;
 				}

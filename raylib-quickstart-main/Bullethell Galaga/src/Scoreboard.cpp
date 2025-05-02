@@ -24,6 +24,12 @@ void Scoreboard::draw()
 
 }
 
+void Scoreboard::erase() {
+    scores.clear();
+    std::ofstream score_fileWrite("Scoreboard.txt");
+    score_fileWrite.close();
+}
+
 void Scoreboard::update()
 {
     
@@ -31,7 +37,7 @@ void Scoreboard::update()
    
     while (std::getline(score_fileRead, scoreString)) {
         scores.push_back(std::stoi(scoreString));
-        std::cout << "reading" << std::endl;
+        /*std::cout << "reading" << std::endl;*/
     }
     
     score_fileRead.close();
@@ -47,7 +53,7 @@ void Scoreboard::update()
     std::ofstream score_fileWrite("Scoreboard.txt");
     for (const auto& score : scores) {
         streamOut(score_fileWrite, score);
-        std::cout << "writing" << std::endl;
+        //std::cout << "writing" << std::endl;
     }
     score_fileWrite.close();
         
